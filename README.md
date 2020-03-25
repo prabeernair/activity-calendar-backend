@@ -8,7 +8,7 @@ The server-side application.
 {TBD: links to testing/staging app instances}
 
 ## Design
-{TBD: something minimal}
+* auth: magic links (with and without email) instead of email + password
 
 ## What makes it possible?
 ### dev deps
