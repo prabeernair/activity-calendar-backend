@@ -8,7 +8,15 @@ The server-side application.
 {TBD: links to testing/staging app instances}
 
 ## Design
-* auth: magic links (with and without email) instead of email + password
+### Authentication
+Magic links (with or without email) instead of email + password.
+Currently each link is a UUID (forever valid), should be switched to JWT.
+
+### Data conversion (DB -> API)
+* `user.id` field is not exposed, users are identified by `user.magic_link`
+* all `<...>_at` fields are exposed only to admin users
+* `activity.duration` (`TSRANGE`) field is split into `data` (`YYYY-MM-DD HH:MM`) + `duration` (`H:MM:SS`) properties
+* `activity.fields` (`JSONB`) field is extracted into arbitrary properties (e.g. `distance`, `surface`)
 
 ## What makes it possible?
 ### dev deps
