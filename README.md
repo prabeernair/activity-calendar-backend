@@ -21,7 +21,7 @@ Currently each link is a UUID (forever valid), should be switched to JWT.
 ## What makes it possible?
 ### dev deps
 * python versioning: [`pyenv`](https://github.com/pyenv/pyenv/)
-* packaging and deps management: [`poetry`](https://poetry.eustace.io/docs/basic-usage/)
+* packaging and deps management: [`poetry`](https://python-poetry.org/docs/basic-usage/)
 * linter: [`pycodestyle`](https://pycodestyle.readthedocs.io/en/latest/)
 * unit tests: [`pytest`](https://pytest.org/en/latest/)
 
@@ -31,5 +31,18 @@ Currently each link is a UUID (forever valid), should be switched to JWT.
 
 ## Development setup
 ```bash
-# TBD: env, deps, linter, tests, build, deploy
+# Postgres
+$ brew install postgres
+$ brew services start postgresql
+# see "src/db/schema.sql" for creating the DB
+$ psql postgres
+# $ psql activity-calendar
+
+# Python
+$ brew install pyenv
+# $ pyenv install --list
+$ pyenv install 3.8.2
+$ pyenv shell 3.8.2
+
+# TBD: env/deps, linter, tests, build, deploy
 ```
