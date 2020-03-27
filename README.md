@@ -2,7 +2,10 @@
 The server-side application.
 
 ## How does it look like?
-{TBD: API examples}
+### Import activities from JSON file
+```bash
+$ python src/scripts/json-import.py 1 ../app-frontend/data/activities.json
+```
 
 ## How to run it?
 {TBD: links to testing/staging app instances}
@@ -30,19 +33,30 @@ Currently each link is a UUID (forever valid), should be switched to JWT.
 * DB: [PostgreSQL](https://www.postgresql.org/docs/12/index.html), possibly in a [Docker](https://docs.docker.com/) container (also consider [`podman`](https://podman.io/) + [`buildah`](https://buildah.io/))
 
 ## Development setup
+### Postgres
 ```bash
-# Postgres
 $ brew install postgres
 $ brew services start postgresql
 # see "src/db/schema.sql" for creating the DB
 $ psql postgres
 # $ psql activity-calendar
+```
 
-# Python
+### Python
+```bash
+# python version
 $ brew install pyenv
 # $ pyenv install --list
 $ pyenv install 3.8.2
 $ pyenv shell 3.8.2
 
-# TBD: env/deps, linter, tests, build, deploy
+# env/deps
+$ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+$ poetry install
+
+# linting
+$ poetry run pycodestyle --show-source ./src/
+
+# unit tests
+$ poetry run pytest ./src/
 ```
