@@ -39,7 +39,7 @@ $ brew install postgres
 $ brew services start postgresql
 # see "src/db/schema.sql" for creating the DB
 $ psql postgres
-# $ psql activity-calendar
+# $ psql activity_calendar
 ```
 
 ### Python
