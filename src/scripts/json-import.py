@@ -1,13 +1,21 @@
 import argparse
+import sys
 import json
 from datetime import datetime, timedelta
+from sqlalchemy import create_engine, Table, MetaData
+from sqlalchemy.sql import select
 
 
-parser = argparse.ArgumentParser(description='Imports a list of activities from JSON file to DB')
+# @todo: load from ENV vars
+db_config = dict(user='markhovs',
+                 host='localhost',
+                 name='activity_calendar')
+
+parser = argparse.ArgumentParser(description="Imports a list of activities from JSON file to DB")
 parser.add_argument('user_id', type=int,
-                    help='a user ID to assign activities to')
+                    help="a user ID to assign activities to")
 parser.add_argument('file', type=open,
-                    help='a relative path to the input file')
+                    help="a relative path to the input file")
 
 args = parser.parse_args()
 
@@ -28,8 +36,7 @@ def create_db_record(json_record):
                    for field_name in field_name_list
                    if field_name in json_record})
 
-    if len(fields):
-        db_record['fields'] = fields
+    db_record['fields'] = fields if len(fields) else None
 
     return db_record
 
@@ -50,13 +57,21 @@ def get_ts_range(date_str, duration_str):
     return f'[{from_dt}, {to_dt}]'
 
 
-if __name__ == "__main__":
-    db_record_map = map(create_db_record, json.load(args.file))
+if __name__ == '__main__':
+    engine = create_engine(f"postgresql+pg8000://{db_config['user']}@{db_config['host']}/{db_config['name']}")
 
-    for db_record in db_record_map:
-        print(db_record)
+    with engine.connect() as connection:
+        users = Table('users', MetaData(), autoload=True, autoload_with=engine)
+        result = connection.execute(select([users]).where(users.c.id == args.user_id))
+        row = result.fetchone()
 
-    # @todo: connect to Postgres and import a given JSON file into the "activities" table
+        if row is None:
+            sys.exit(f"user with ID {args.user_id} is not found in DB")
+
+        activities = Table('activities', MetaData(), autoload=True, autoload_with=engine)
+        result = connection.execute(activities.insert(), [create_db_record(json_record)
+                                                          for json_record in json.load(args.file)])
+        print(f"inserted {result.rowcount} records into 'activities' table")
 
     import doctest
     doctest.testmod()

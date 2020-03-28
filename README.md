@@ -2,9 +2,9 @@
 The server-side application.
 
 ## How does it look like?
-### Import activities from JSON file
+### Import activities from JSON file to DB
 ```bash
-$ python src/scripts/json-import.py 1 ../app-frontend/data/activities.json
+$ poetry run python ./src/scripts/json-import.py 1 ../app-frontend/data/activities.json
 ```
 
 ## How to run it?
@@ -30,6 +30,7 @@ Currently each link is a UUID (forever valid), should be switched to JWT.
 
 ### deps
 * framework: [`pyramid`](https://docs.pylonsproject.org/projects/pyramid/en/1.10-branch/)
+* SQL toolkit: [`sqlalchemy`](https://www.sqlalchemy.org/)
 * DB: [PostgreSQL](https://www.postgresql.org/docs/12/index.html), possibly in a [Docker](https://docs.docker.com/) container (also consider [`podman`](https://podman.io/) + [`buildah`](https://buildah.io/))
 
 ## Development setup
