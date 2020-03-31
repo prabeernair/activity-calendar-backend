@@ -7,15 +7,16 @@ CREATE DATABASE activity_calendar;
 -- DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
   id                 SERIAL         PRIMARY KEY,
+  public_id          UUID           UNIQUE NOT NULL,
   name               VARCHAR(255)   ,
   email              VARCHAR(255)   ,
-  magic_link         UUID           UNIQUE NOT NULL,
+  magic_link         VARCHAR(255)   ,
   last_logged_in_at  TIMESTAMP      ,
   created_at         TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at         TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO users VALUES (DEFAULT, 'Oleksii', NULL, 'e1fabafc-b024-41ca-b246-85e7f6b70a5a', NULL, DEFAULT, DEFAULT);
+INSERT INTO users VALUES (DEFAULT, 'e1fabafc-b024-41ca-b246-85e7f6b70a5a', 'Oleksii', 'oleksii@example.org', NULL, NULL, DEFAULT, DEFAULT);
 -- SELECT * FROM users;
 
 -- DROP TABLE IF EXISTS activities;

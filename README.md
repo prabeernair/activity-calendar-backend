@@ -49,11 +49,13 @@ $ psql postgres
 $ brew install pyenv
 # $ pyenv install --list
 $ pyenv install 3.8.2
-$ pyenv shell 3.8.2
+# $ pyenv local 3.8.2
+# $ pyenv shell 3.8.2
 
 # env/deps
 $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 $ poetry install
+# $ poetry update
 
 # linting
 $ poetry run pycodestyle --show-source ./src/
