@@ -1,7 +1,7 @@
 -- @see: https://www.postgresql.org/docs/12/
 
 -- DROP DATABASE IF EXISTS activity_calendar;
-CREATE DATABASE activity_calendar;
+-- CREATE DATABASE activity_calendar;
 -- \connect activity_calendar;
 
 -- DROP TABLE IF EXISTS users CASCADE;

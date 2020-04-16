@@ -38,9 +38,12 @@ Currently each link is a UUID (forever valid), should be switched to JWT.
 ```bash
 $ brew install postgres
 $ brew services start postgresql
-# see "src/db/schema.sql" for creating the DB
-$ psql postgres
-# $ psql activity_calendar
+# $ psql postgres
+
+$ createdb activity_calendar
+$ psql activity_calendar < db/schema.sql
+# $ pg_dump activity_calendar > db/dump.sql
+# $ psql --set ON_ERROR_STOP=on activity_calendar < db/dump.sql
 ```
 
 ### Python
