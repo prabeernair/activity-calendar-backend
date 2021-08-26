@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import create_engine, Table, MetaData
 from sqlalchemy.sql import select
 
+# @todo: add type hints
 
 # @todo: load from ENV vars
 db_config = dict(user='markhovs',
@@ -25,6 +26,7 @@ def create_db_record(json_record):
                      type=json_record['type'],
                      duration=get_ts_range(json_record['date'], json_record['duration']))
 
+    # @todo: take all fields from "json_record" except ".type", ".date" and ".duration"
     field_name_list = [
         'distance',
         'surface',
