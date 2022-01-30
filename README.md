@@ -46,6 +46,7 @@ Currently each link is a UUID (forever valid), should be switched to JWT.
 ### Postgres
 ```bash
 $ brew install postgres
+# $ brew upgrade postgres
 $ brew services start postgresql
 # $ psql postgres
 
@@ -57,17 +58,26 @@ $ psql activity_calendar < db/schema.sql
 
 ### Python
 ```bash
-# python version
+# install/update pyenv
+# $ brew update
 $ brew install pyenv
-# $ pyenv install --list
-$ pyenv install 3.8.2
-# $ pyenv local 3.8.2
-# $ pyenv shell 3.8.2
+# $ brew upgrade pyenv
+# make sure pyenv and its shims are added to PATH
 
-# env/deps
-$ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+# set python version
+# $ pyenv install --list
+$ pyenv install 3.10.2
+# $ pyenv local <version>
+# $ pyenv shell <version>
+
+# install/update poetry
+$ curl -sSL https://install.python-poetry.org | python3 -
+# $ poetry self update
+
+# install/update env/deps
 $ poetry install
 # $ poetry update
+$ poetry env info
 
 # linting
 $ poetry run pycodestyle --show-source ./src/

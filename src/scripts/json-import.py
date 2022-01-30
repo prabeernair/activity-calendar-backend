@@ -2,10 +2,9 @@ import argparse
 import sys
 import json
 from datetime import datetime, timedelta
-from sqlalchemy import create_engine, Table, MetaData
+from sqlalchemy import create_engine, exc, Table, MetaData
 from sqlalchemy.sql import select
 
-# @todo: add type hints
 
 # @todo: load from ENV vars
 db_config = dict(user='markhovs',
@@ -21,10 +20,11 @@ parser.add_argument('file', type=open,
 args = parser.parse_args()
 
 
-def create_db_record(json_record):
+def create_db_record(json_record: dict) -> dict:
     db_record = dict(user_id=args.user_id,
                      type=json_record['type'],
-                     duration=get_ts_range(json_record['date'], json_record['duration']))
+                     duration=get_ts_range(json_record['date'],
+                                           json_record['duration'] if 'duration' in json_record else '0:00:00'))
 
     # @todo: take all fields from "json_record" except ".type", ".date" and ".duration"
     field_name_list = [
@@ -43,7 +43,7 @@ def create_db_record(json_record):
     return db_record
 
 
-def get_ts_range(date_str, duration_str):
+def get_ts_range(date_str: str, duration_str: str) -> str:
     """
     Returns a Postgres TSRANGE string.
 
@@ -62,18 +62,21 @@ def get_ts_range(date_str, duration_str):
 if __name__ == '__main__':
     engine = create_engine(f"postgresql+pg8000://{db_config['user']}@{db_config['host']}/{db_config['name']}")
 
-    with engine.connect() as connection:
-        users = Table('users', MetaData(), autoload=True, autoload_with=engine)
-        result = connection.execute(select([users]).where(users.c.id == args.user_id))
-        row = result.fetchone()
+    try:
+        with engine.connect() as connection:
+            users = Table('users', MetaData(), autoload=True, autoload_with=engine)
+            result = connection.execute(select([users]).where(users.c.id == args.user_id))
+            row = result.fetchone()
 
-        if row is None:
-            sys.exit(f"user with ID {args.user_id} is not found in DB")
+            if row is None:
+                sys.exit(f"user with ID {args.user_id} is not found in DB")
 
-        activities = Table('activities', MetaData(), autoload=True, autoload_with=engine)
-        result = connection.execute(activities.insert(), [create_db_record(json_record)
-                                                          for json_record in json.load(args.file)])
-        print(f"inserted {result.rowcount} records into 'activities' table")
+            activities = Table('activities', MetaData(), autoload=True, autoload_with=engine)
+            result = connection.execute(activities.insert(), [create_db_record(json_record)
+                                                              for json_record in json.load(args.file)])
+            print(f"inserted {result.rowcount} records into 'activities' table")
+    except exc.InterfaceError as error:
+        sys.exit(f"SQLAlchemy InterfaceError (check if PostgreSQL is running):\n{error}")
 
     import doctest
     doctest.testmod()

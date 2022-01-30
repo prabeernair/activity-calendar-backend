@@ -1,2 +1,4 @@
-.pytest_cache
+.pytest_cache/
 db/dump.sql
+cache/
+output/
