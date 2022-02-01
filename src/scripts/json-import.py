@@ -2,6 +2,7 @@ import argparse
 import sys
 import json
 from datetime import datetime, timedelta
+from typing import List
 from sqlalchemy import create_engine, exc, Table, MetaData
 from sqlalchemy.sql import select
 
@@ -17,6 +18,7 @@ parser.add_argument('user_id', type=int,
 parser.add_argument('file', type=open,
                     help="a relative path to the input file")
 
+# as "args.file" is "TextIOWrapper", this already checks if given file exists
 args = parser.parse_args()
 
 
@@ -60,6 +62,11 @@ def get_ts_range(date_str: str, duration_str: str) -> str:
 
 
 if __name__ == '__main__':
+    try:
+        json_record_list: List[dict] = json.load(args.file)
+    except json.JSONDecodeError as error:
+        sys.exit(f"File content can not be deserialized to JSON:\n{error}")
+
     engine = create_engine(f"postgresql+pg8000://{db_config['user']}@{db_config['host']}/{db_config['name']}")
 
     try:
@@ -73,10 +80,11 @@ if __name__ == '__main__':
 
             activities = Table('activities', MetaData(), autoload=True, autoload_with=engine)
             result = connection.execute(activities.insert(), [create_db_record(json_record)
-                                                              for json_record in json.load(args.file)])
+                                                              for json_record in json_record_list])
             print(f"inserted {result.rowcount} records into 'activities' table")
     except exc.InterfaceError as error:
-        sys.exit(f"SQLAlchemy InterfaceError (check if PostgreSQL is running):\n{error}")
+        sys.exit(("SQLAlchemy InterfaceError (check if PostgreSQL is running and the connection string is correct):\n"
+                  f"{error}"))
 
     import doctest
     doctest.testmod()

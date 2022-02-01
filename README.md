@@ -75,6 +75,7 @@ $ curl -sSL https://install.python-poetry.org | python3 -
 # $ poetry self update
 
 # install/update env/deps
+$ poetry config virtualenvs.in-project true
 $ poetry install
 # $ poetry update
 $ poetry env info
